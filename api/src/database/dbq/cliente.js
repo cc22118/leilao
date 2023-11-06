@@ -1,17 +1,70 @@
+const TokenAdmin = require("../../utils/token")
+const getConnection = require("../connection")
 const Cliente = require("../dba/cliente")
 
-module.exports = {
-    criar: (cliente) => {
-
+module.exports  = ClienteDBQ = {
+    criar: async (cliente) => {
+        try {
+            await getConnection().query(`
+                insert INTO pratica.Cliente values 
+                (
+                    '${cliente.nome}',
+                    '${cliente.email}',
+                    '${cliente.endereco}',
+                    '${cliente.senha}',
+                    ${cliente.urlAvatar? "'"+cliente.urlAvatar+"'" : "null"},
+                    '${cliente.cargo}'
+                )
+            `)
+            return true
+        } catch (err) {
+            console.log("Error na criação de Cliente: "+err.code)
+            return false
+        }
     },
-    logar: (id, senha) => {
+    logar: async (email, senha) => {
+        try {
+            const result = await getConnection().query(`
+                select * from pratica.Cliente
+                where email = '${email}'
+            `)
+
+            if(result.recordset[0].senha !== senha)
+                return false
+            return TokenAdmin.gerar({ id: result.recordset[0].id, cargo: result.recordset[0].cargo, nome: result.recordset[0].nome })
+        } catch (err) {
+            console.log("Error ao logar Cliente: "+err.code)
+            return false
+        
+        }
     },
     deletar: (id) => {
     },
     atualizar: (id, cliente) => {
     },
-    buscarId: (id) => {
+    buscarId: async (id) => {
+        try {
+            const result = await getConnection().query(`
+                select * from pratica.Cliente
+                where id = ${id}
+            `)
+
+            return result.recordset[0]
+        } catch(err) {
+            console.log("Error ao buscar Cliente por id: "+err.code)
+            return false
+        }
     },
-    buscarTodos: (id) => {
+    buscarTodos: async () => {
+        try {
+            const result = await getConnection().query(`
+                select * from pratica.Cliente
+            `)
+
+            return result.recordset
+        } catch(err) {
+            console.log("Error ao buscar todos os Clientes: "+err.code)
+            return false
+        }
     }
 }
