@@ -1,27 +1,31 @@
-const Connection = require('tedious').Connection
+require("dotenv/config")
+const sql = require("mssql")
 
-const config = {
-    server: 'regulus.cotuca.unicamp.br',
-    authentication: {
-        type: 'default',
-        options: {
-            userName: 'BD22118',
-            password: '@ngel11539' 
-        }
-    },
-    options: {
-        encrypt: false,
-        database: 'BD22118'
-    }
+let connection = null
+
+async function handleConnection() {
+    console.log("Conectando ao Banco de Dados...")
+    connection = await sql.connect({
+        server: process.env.BD_HOST,
+        user: process.env.BD_USER,
+        password: process.env.BD_PASS,
+        database: process.env.BD_DATABASE
+    })
+    .then(e => {
+        console.log(`Banco de Dados ${process.env.BD_HOST}, conectado com sucesso!`)
+        return e
+    })
+    .catch(err => {
+        console.log(`[Error] Conexão com Banco de Dados ${process.env.BD_HOST}:\n    >`+err)
+        return null
+    })
+    return connection
 }
 
-const connection = new Connection(config)
+function getConnection() {
+    if(connection != null)
+        return connection
+    return handleConnection()
+}
 
-connection.on('connect', function(err) {  
-    if(err)
-        console.log("Erro ao conectar com o BD -> "+err)
-    else
-    console.log("Conectado no BD");  
-});
-
-module.exports = connection
+module.exports = getConnection

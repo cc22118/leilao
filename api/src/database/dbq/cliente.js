@@ -2,6 +2,7 @@ const Cliente = require("../dba/cliente")
 
 module.exports = {
     criar: (cliente) => {
+
     },
     logar: (id, senha) => {
     },

@@ -3,6 +3,7 @@ const cors = require("cors")
 const clienteRoutes = require("./routes/cliente")
 const lanceRoutes = require("./routes/lance")
 const produtoRoutes = require("./routes/produto")
+const getConnection = require("./database/connection")
 
 const app = express()
 
@@ -27,6 +28,9 @@ app.use("*", (req, res) => {
     `)
 })
 
+//------------[ Iniciando Conexão BD ]------------//
+getConnection()
+//-------------[ Iniciando API REST ]-------------//
 app.listen(3028, () => {
     console.log("Servidor iniciado na porta 3028")
 })
