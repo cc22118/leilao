@@ -9,4 +9,9 @@ module.exports = class Lance {
         this.valor = valor
         this.atualizadoEm = atualizadoEm
     }
+
+    async popular() {
+        this.leilao = await LeilaoDBQ.buscarPorId(this.idLeilao)
+        this.cliente = await ClienteDBQ.buscarPorId(this.idCliente)
+    }
 }

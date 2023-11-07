@@ -9,4 +9,9 @@ module.exports = class Leilao {
         this.dataInicio = dataInicio
         this.dataFim = dataFim
     }
+
+    async popular() {
+        this.produto = await ProdutoDBQ.buscarPorId(this.idProduto)
+        this.lances = await LanceDBQ.buscarTodosDe(this.id)
+    }
 }
