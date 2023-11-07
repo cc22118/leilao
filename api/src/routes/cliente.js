@@ -34,7 +34,7 @@ clienteRoutes.use(logadoMiddleware)
 
 //---------------[ Somente Logado ]---------------//
 
-clienteRoutes.get("/all", async (req, res) => {
+clienteRoutes.get("/list/all", async (req, res) => {
     if(req.user.cargo !== "admin")
         return res.status(403).json({ error: "você não possui autorização" })
     return res.status(200).json(await ClienteDBQ.buscarTodos())
@@ -59,21 +59,44 @@ clienteRoutes.get("/:id", async (req, res) => {
     return res.status(200).json(cliente)
 })
 
-clienteRoutes.put("/:id", (req, res) => {
+clienteRoutes.put("/:id", async (req, res) => {
     const { id } = req.params
     const { cargo, nome, email, endereco, senha, urlAvatar } = req.body
     if(req.user.cargo !== "admin" || req.user.id != id)
         res.status(403).json({ error: "você não possui autorização" })
-    if(Cliente.validaId(id) && Cliente.validaCargo(cargo) && Cliente.validaNome(nome) && Cliente.validaEmail(email) && Cliente.validaEndereco(endereco) && Cliente.validaSenha(senha) && (!urlAvatar || Cliente.validaUrlAvatar(urlAvatar)))
+    if(Cliente.validaId(id) && (!cargo || Cliente.validaCargo(cargo)) && (!nome || Cliente.validaNome(nome)) && (!email || Cliente.validaEmail(email)) && (!endereco || Cliente.validaEndereco(endereco)) && (!senha || Cliente.validaSenha(senha)) && (!urlAvatar || Cliente.validaUrlAvatar(urlAvatar)))
         res.status(400).json({ error: "parâmetros incorretos ou tipos inválidos" })
+
+    const cliente = await ClienteDBQ.buscarId(id)
+
+    if(!cliente)
+        return res.status(404).json({ error: "cliente não encontrado" })
+
+    if(!await ClienteDBQ.atualizar(id, {
+        cargo: cargo || cliente.cargo,
+        nome: nome || cliente.nome,
+        email: email || cliente.email,
+        endereco: endereco || cliente.endereco,
+        senha: senha || cliente.senha,
+        urlAvatar: urlAvatar || cliente.urlAvatar
+    }))
+        return res.status(401).json({ error: "erro ao atualizar cliente" })
+    return res.status(200).json({ message: "cliente atualizado com sucesso" })
 })
 
-clienteRoutes.delete("/:id", (req, res) => {
+clienteRoutes.delete("/:id", async (req, res) => {
     const { id } = req.params
     if(req.user.cargo !== "admin" && req.user.id != id)
         res.status(403).json({ error: "você não possui autorização" })
     if(Cliente.validaId(id))
         res.status(400).json({ error: "parâmetros incorretos ou tipos inválidos" })
+
+    if(!await ClienteDBQ.buscarId(id))
+        return res.status(404).json({ error: "cliente não encontrado" })
+
+    if(!await ClienteDBQ.deletar(id))
+        return res.status(401).json({ error: "erro ao deletar cliente" })
+    return res.status(200).json({ message: "cliente deletado com sucesso" })
 })
 
 module.exports = clienteRoutes
