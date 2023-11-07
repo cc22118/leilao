@@ -38,9 +38,36 @@ module.exports  = ClienteDBQ = {
         
         }
     },
-    deletar: (id) => {
+    deletar: async (id) => {
+        try {
+            await getConnection().query(`
+                delete from pratica.Cliente
+                where id = ${id}
+            `)
+            return true
+        } catch(err) {
+            console.log("Error ao deletar Cliente: "+err.code)
+            return false
+        }
     },
-    atualizar: (id, cliente) => {
+    atualizar: async (id, cliente) => {
+        try {
+            await getConnection().query(`
+                update pratica.Cliente set
+                cargo = '${cliente.cargo}',
+                nome = '${cliente.nome}',
+                email = '${cliente.email}',
+                endereco = '${cliente.endereco}',
+                senha = '${cliente.senha}',
+                urlAvatar = ${cliente.urlAvatar? "'"+cliente.urlAvatar+"'" : "null"}
+                where id = ${id}
+            `)
+
+            return true
+        } catch(err) {
+            console.log("Error ao atualizar Cliente: "+err.code)
+            return false
+        }
     },
     buscarId: async (id) => {
         try {
