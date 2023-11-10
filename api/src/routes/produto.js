@@ -2,6 +2,8 @@ const express = require("express")
 const logadoMiddleware = require("../middleware/logado")
 const Produto = require("../database/dba/produto")
 const ProdutoDBQ = require("../database/dbq/produto")
+const LeilaoDBQ = require("../database/dbq/leilao")
+const Leilao = require("../database/dba/leilao")
 
 const produtoRoutes = express.Router()
 
@@ -38,6 +40,59 @@ produtoRoutes.post("/", async (req, res) => {
     if(!produto)
         return res.status(400).json({ error: "erro ao criar lance" })
     return res.status(201).json({ message: "lance criado com sucesso" })
+})
+
+produtoRoutes.post("/:id/auction", async (req, res) => {
+  const { id } = req.params
+
+  if(req.user.cargo !== "admin" || req.user.cargo !== "vendedor")
+    return res.status(403).json({ error: "você não possui autorização" })
+
+  if(!id)
+    return res.status(400).json({ error: "parâmetros incorretos ou tipos inválidos" })
+
+  const produto = await ProdutoDBQ.buscarPorId(id)
+
+  if(!produto)
+    return res.status(400).json({ error: "produto não encontrado" })
+
+  if(produto.id_vendedor !== req.user.id)
+    return res.status(403).json({ error: "você não possui autorização" })
+
+  if(!await LeilaoDBQ.criar(Leilao(0, id, new Date(), new Date())))
+    return res.status(400).json({ error: "erro ao criar leilão" })
+  return res.status(201).json({ message: "leilão criado com sucesso" })
+})
+
+produtoRoutes.post("/:id/auction/end", async (req, res) => {
+  const { id } = req.params
+
+  if(req.user.cargo !== "admin" || req.user.cargo !== "vendedor")
+    return res.status(403).json({ error: "você não possui autorização" })
+
+  if(!id)
+    return res.status(400).json({ error: "parâmetros incorretos ou tipos inválidos" })
+  
+  const produto = await ProdutoDBQ.buscarPorId(id)
+
+  if(!produto)
+    return res.status(400).json({ error: "produto não encontrado" })
+
+  if(produto.id_vendedor !== req.user.id)
+    return res.status(403).json({ error: "você não possui autorização" })
+
+  const leilao = await LeilaoDBQ.buscarPorIdProduto(id)
+
+  if(!leilao)
+    return res.status(400).json({ error: "leilão não encontrado" })
+
+  if(!await LeilaoDBQ.atualizar(leilao.id, {
+    ...leilao,
+    dataFim: new Date()
+  }))
+    return res.status(400).json({ error: "erro ao finalizar leilão" })
+
+  return res.status(200).json({ message: "leilão finalizado com sucesso" })
 })
 
 produtoRoutes.delete("/:id", async (req, res) => {
