@@ -6,7 +6,7 @@ const clienteRoutes = express.Router()
 
 //---------------[ Somente Deslogado ]---------------//
 
-clienteRoutes.get("/login", async (req, res) => {
+clienteRoutes.post("/login", async (req, res) => {
     const { email, senha } = req.body
     if(Cliente.validaEmail(email) && Cliente.validaSenha(senha))
         res.status(401).json({ error: "parâmetros incorretos ou tipos inválidos" })
