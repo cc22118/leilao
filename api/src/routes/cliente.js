@@ -8,8 +8,12 @@ const clienteRoutes = express.Router()
 
 clienteRoutes.post("/login", async (req, res) => {
     const { email, senha } = req.body
+
+    if(!email || !senha)
+        return res.status(401).json({ error: "parâmetros incorretos ou tipos inválidos" })
+
     if(Cliente.validaEmail(email) && Cliente.validaSenha(senha))
-        res.status(401).json({ error: "parâmetros incorretos ou tipos inválidos" })
+        return res.status(401).json({ error: "parâmetros incorretos ou tipos inválidos" })
 
     const jwt = await ClienteDBQ.logar(email, senha)
     if(!jwt)
@@ -20,7 +24,7 @@ clienteRoutes.post("/login", async (req, res) => {
 clienteRoutes.post("/", async (req, res) => {
     const { cargo, nome, email, endereco, senha, urlAvatar } = req.body
     if(Cliente.validaCargo(cargo) && Cliente.validaNome(nome) && Cliente.validaEmail(email) && Cliente.validaEndereco(endereco) && Cliente.validaSenha(senha) && (!urlAvatar || Cliente.validaUrlAvatar(urlAvatar)))
-        res.status(401).json({ error: "parâmetros incorretos ou tipos inválidos" })
+        return res.status(401).json({ error: "parâmetros incorretos ou tipos inválidos" })
 
     const cliente = new Cliente(0, cargo, nome, email, endereco, senha, urlAvatar)
     if(!await ClienteDBQ.criar(cliente))
@@ -63,9 +67,9 @@ clienteRoutes.put("/:id", async (req, res) => {
     const { id } = req.params
     const { cargo, nome, email, endereco, senha, urlAvatar } = req.body
     if(req.user.cargo !== "admin" || req.user.id != id)
-        res.status(403).json({ error: "você não possui autorização" })
+        return res.status(403).json({ error: "você não possui autorização" })
     if(Cliente.validaId(id) && (!cargo || Cliente.validaCargo(cargo)) && (!nome || Cliente.validaNome(nome)) && (!email || Cliente.validaEmail(email)) && (!endereco || Cliente.validaEndereco(endereco)) && (!senha || Cliente.validaSenha(senha)) && (!urlAvatar || Cliente.validaUrlAvatar(urlAvatar)))
-        res.status(400).json({ error: "parâmetros incorretos ou tipos inválidos" })
+        return res.status(400).json({ error: "parâmetros incorretos ou tipos inválidos" })
 
     const cliente = await ClienteDBQ.buscarId(id)
 
@@ -87,9 +91,9 @@ clienteRoutes.put("/:id", async (req, res) => {
 clienteRoutes.delete("/:id", async (req, res) => {
     const { id } = req.params
     if(req.user.cargo !== "admin" && req.user.id != id)
-        res.status(403).json({ error: "você não possui autorização" })
+        return res.status(403).json({ error: "você não possui autorização" })
     if(Cliente.validaId(id))
-        res.status(400).json({ error: "parâmetros incorretos ou tipos inválidos" })
+        return res.status(400).json({ error: "parâmetros incorretos ou tipos inválidos" })
 
     if(!await ClienteDBQ.buscarId(id))
         return res.status(404).json({ error: "cliente não encontrado" })
