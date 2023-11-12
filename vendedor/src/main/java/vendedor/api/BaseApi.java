@@ -2,6 +2,7 @@ package vendedor.api;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.net.*;
 import java.time.Duration;
 import java.util.Map;
@@ -34,20 +35,26 @@ public class BaseApi {
     return "?"+newQuery;
   }
 
-  static String get(String path, Map<String, String> params, Map<String, String> headers, Map<String, String> query) throws Exception {
+  static String get(String path, Map<String, String> params, Map<String, String> query, String token) throws Exception {
     if(path == null || path.isEmpty())
       throw new Exception("Path não pode ser nulo ou vazio");
     HttpURLConnection conn = (HttpURLConnection) new URL(BASE_URL+"/"+handlePath(path, params)+handleQuery(query)).openConnection();
+    conn.setDoOutput(true);
     conn.setRequestMethod("GET");
-    if(headers != null && !headers.isEmpty())
-      headers.forEach((k, v) -> conn.setRequestProperty(k, v));
+
+    conn.setRequestProperty("Content-Type", "application/json");
+    conn.setRequestProperty("Accept", "application/json");
+    if(token != null && !token.isEmpty())
+      conn.setRequestProperty("Authorization", "Bearer "+token);
+
     conn.setConnectTimeout((int) TIMEOUT.toMillis());
+    conn.connect();
 
     if(conn.getResponseCode() != 200) {
       conn.disconnect();
       throw new Exception(String.format("Erro [%d] ao fazer requisição GET - [%s]", conn.getResponseCode(), conn.getURL()));
     }
-    
+
     BufferedReader bodyReader = new BufferedReader(new InputStreamReader((conn.getInputStream())));
 
     String output = "";
@@ -61,23 +68,27 @@ public class BaseApi {
     return output;
   }
 
-  static String post(String path, Map<String, String> params, Map<String, String> headers, Map<String, String> query, IConvertJson data) throws Exception {
-    return post(path, params, headers, query, data.toJson());
+  static String post(String path, Map<String, String> params, Map<String, String> query, String token, IConvertJson data) throws Exception {
+    return post(path, params, query, token, data.toJson());
   }
 
-  static String post(String path, Map<String, String> params, Map<String, String> headers, Map<String, String> query, String data) throws Exception {
+  static String post(String path, Map<String, String> params, Map<String, String> query, String token, String data) throws Exception {
     if(path == null || path.isEmpty())
       throw new Exception("Path não pode ser nulo ou vazio");
     HttpURLConnection conn = (HttpURLConnection) new URL(BASE_URL+"/"+handlePath(path, params)+handleQuery(query)).openConnection();
-    conn.setRequestMethod("POST");
-    if(headers != null && !headers.isEmpty())
-      headers.forEach((k, v) -> conn.setRequestProperty(k, v));
-    conn.setConnectTimeout((int) TIMEOUT.toMillis());
     conn.setDoOutput(true);
+    conn.setRequestMethod("POST");
 
+    conn.setRequestProperty("Content-Type", "application/json");
+    conn.setRequestProperty("Accept", "application/json");
+    if(token != null && !token.isEmpty())
+      conn.setRequestProperty("Authorization", "Bearer "+token);
+
+    conn.setConnectTimeout((int) TIMEOUT.toMillis());
     conn.getOutputStream().write(data.getBytes());
     conn.getOutputStream().flush();
     conn.getOutputStream().close();
+    conn.connect();
 
     if(conn.getResponseCode() != 200) {
       conn.disconnect();
@@ -97,23 +108,27 @@ public class BaseApi {
     return output;
   }
 
-  static String put(String path, Map<String, String> params, Map<String, String> headers, Map<String, String> query, IConvertJson data) throws Exception {
-    return put(path, params, headers, query, data.toJson());
+  static String put(String path, Map<String, String> params, Map<String, String> query, String token, IConvertJson data) throws Exception {
+    return put(path, params, query, token, data.toJson());
   }
 
-  static String put(String path, Map<String, String> params, Map<String, String> headers, Map<String, String> query, String data) throws Exception {
+  static String put(String path, Map<String, String> params, Map<String, String> query, String token, String data) throws Exception {
     if(path == null || path.isEmpty())
       throw new Exception("Path não pode ser nulo ou vazio");
     HttpURLConnection conn = (HttpURLConnection) new URL(BASE_URL+"/"+handlePath(path, params)+handleQuery(query)).openConnection();
-    conn.setRequestMethod("PUT");
-    if(headers != null && !headers.isEmpty())
-      headers.forEach((k, v) -> conn.setRequestProperty(k, v));
-    conn.setConnectTimeout((int) TIMEOUT.toMillis());
     conn.setDoOutput(true);
+    conn.setRequestMethod("PUT");
 
+    conn.setRequestProperty("Content-Type", "application/json");
+    conn.setRequestProperty("Accept", "application/json");
+    if(token != null && !token.isEmpty())
+      conn.setRequestProperty("Authorization", "Bearer "+token);
+
+    conn.setConnectTimeout((int) TIMEOUT.toMillis());
     conn.getOutputStream().write(data.getBytes());
     conn.getOutputStream().flush();
     conn.getOutputStream().close();
+    conn.connect();
 
     if(conn.getResponseCode() != 200) {
       conn.disconnect();
@@ -133,14 +148,20 @@ public class BaseApi {
     return output;
   }
 
-  static String delete(String path, Map<String, String> params, Map<String, String> headers, Map<String, String> query) throws Exception {
+  static String delete(String path, Map<String, String> params, Map<String, String> query, String token) throws Exception {
     if(path == null || path.isEmpty())
       throw new Exception("Path não pode ser nulo ou vazio");
     HttpURLConnection conn = (HttpURLConnection) new URL(BASE_URL+"/"+handlePath(path, params)+handleQuery(query)).openConnection();
+    conn.setDoOutput(true);
     conn.setRequestMethod("DELETE");
-     if(headers != null && !headers.isEmpty())
-      headers.forEach((k, v) -> conn.setRequestProperty(k, v));
+
+    conn.setRequestProperty("Content-Type", "application/json");
+    conn.setRequestProperty("Accept", "application/json");
+    if(token != null && !token.isEmpty())
+      conn.setRequestProperty("Authorization", "Bearer "+token);
+
     conn.setConnectTimeout((int) TIMEOUT.toMillis());
+    conn.connect();
 
     if(conn.getResponseCode() != 200) {
       conn.disconnect();

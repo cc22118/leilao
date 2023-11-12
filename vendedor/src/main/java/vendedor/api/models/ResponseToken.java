@@ -5,8 +5,8 @@ import com.google.gson.Gson;
 import vendedor.api.utils.IConvertJson;
 
 public class ResponseToken implements IConvertJson {
-  public String message;
-  public String token;
+  private String message;
+  private String token;
 
   public ResponseToken() {}
 
