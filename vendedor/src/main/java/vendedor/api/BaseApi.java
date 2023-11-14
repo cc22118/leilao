@@ -90,7 +90,7 @@ public class BaseApi {
     conn.getOutputStream().close();
     conn.connect();
 
-    if(conn.getResponseCode() != 200) {
+    if(conn.getResponseCode() < 200 && conn.getResponseCode() > 299) {
       conn.disconnect();
       throw new Exception(String.format("Erro [%d] ao fazer requisição POST - [%s]", conn.getResponseCode(), conn.getURL()));
     }
