@@ -18,7 +18,7 @@ produtoRoutes.get("/list", async (req, res) => {
 
   if(!produtos)
     return res.status(400).json({ error: "erro ao buscar produtos" })
-  return res.status(200).json(produtos.filter(produto => (id_vendedor && produto.id_vendedor === id_vendedor)))
+  return res.status(200).json(produtos.filter(produto => (id_vendedor && produto.criador === parseInt(id_vendedor))))
 })
 
 //------------[ Middlewares de login ]------------//
@@ -30,7 +30,7 @@ produtoRoutes.use(logadoMiddleware)
 produtoRoutes.post("/", async (req, res) => {
     const { nome, descricao, urlFoto, valorMinimo } = req.body
 
-    if(req.user.cargo !== "admin" || req.user.cargo !== "vendedor")
+    if(req.user.cargo !== "admin" && req.user.cargo !== "vendedor")
       return res.status(403).json({ error: "você não possui autorização" })
 
     if(!nome || !descricao || !urlFoto || !valorMinimo)
@@ -38,14 +38,14 @@ produtoRoutes.post("/", async (req, res) => {
 
     const produto = ProdutoDBQ.criar(new Produto(0, nome, req.user.id, descricao, urlFoto, valorMinimo))
     if(!produto)
-        return res.status(400).json({ error: "erro ao criar lance" })
-    return res.status(201).json({ message: "lance criado com sucesso" })
+        return res.status(400).json({ error: "erro ao criar produto" })
+    return res.status(201).json({ message: "Produto criado com sucesso" })
 })
 
 produtoRoutes.post("/:id/auction", async (req, res) => {
   const { id } = req.params
 
-  if(req.user.cargo !== "admin" || req.user.cargo !== "vendedor")
+  if(req.user.cargo !== "admin" && req.user.cargo !== "vendedor")
     return res.status(403).json({ error: "você não possui autorização" })
 
   if(!id)
@@ -67,7 +67,7 @@ produtoRoutes.post("/:id/auction", async (req, res) => {
 produtoRoutes.post("/:id/auction/end", async (req, res) => {
   const { id } = req.params
 
-  if(req.user.cargo !== "admin" || req.user.cargo !== "vendedor")
+  if(req.user.cargo !== "admin" && req.user.cargo !== "vendedor")
     return res.status(403).json({ error: "você não possui autorização" })
 
   if(!id)
@@ -98,7 +98,7 @@ produtoRoutes.post("/:id/auction/end", async (req, res) => {
 produtoRoutes.delete("/:id", async (req, res) => {
     const { id } = req.params
 
-    if(req.user.cargo !== "admin" || req.user.cargo !== "vendedor")
+    if(req.user.cargo !== "admin" && req.user.cargo !== "vendedor")
       return res.status(403).json({ error: "você não possui autorização" })
 
     if(!id)
@@ -118,7 +118,7 @@ produtoRoutes.put("/:id", async (req, res) => {
     const { id } = req.params
     const { nome, descricao, urlFoto, valorMinimo } = req.body
 
-    if(req.user.cargo !== "admin" || req.user.cargo !== "vendedor")
+    if(req.user.cargo !== "admin" && req.user.cargo !== "vendedor")
       return res.status(403).json({ error: "você não possui autorização" })
 
     if(!id)
