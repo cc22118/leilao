@@ -20,6 +20,7 @@ public class ProdutoApi extends BaseApi {
     catch (Exception e) { e.printStackTrace(); return false; }
   }
 
+  
   public static boolean editar(ResponseToken token, Produto produto) {
     try {
       put(BASE_PATH+"/", null, token.getToken(), produto);
@@ -38,6 +39,15 @@ public class ProdutoApi extends BaseApi {
     catch (Exception e) { return new Produto[] { }; }
   }
   
+  public static Produto buscar(ResponseToken token, int id) {
+    try {
+      String result = get(BASE_PATH+"/"+id, null, token.getToken());
+      
+      return new Gson().fromJson(result, Produto.class);
+    }
+    catch (Exception e) { return null; }
+  }
+  
   public static boolean leiloar(ResponseToken token, int id) {
     try {
       post(BASE_PATH+"/"+id+"/auction", null, token.getToken(), "");
@@ -45,7 +55,7 @@ public class ProdutoApi extends BaseApi {
     }
     catch (Exception e) { return false; }
   }
-
+  
   public static boolean deletar(ResponseToken token, int id) {
     try {
       delete(BASE_PATH+"/"+id, null, token.getToken());

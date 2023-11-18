@@ -113,6 +113,71 @@ public class Main {
                         scanner.nextLine();
                         opcao = -1;
                         break;
+                    case 3:
+                        System.out.print("Digite o id do produto que deseja editar: ");
+                        int id = scanner.nextInt();
+                        scanner.nextLine();
+                        Produto produto = ProdutoApi.buscar(token, id);
+                        if(produto == null) {
+                            limparConsole();
+                            System.out.println("Produto não encontrado");
+                            continue;
+                        }
+                        System.out.println("Produto encontrado:");
+                        System.out.print("Digite o novo nome do produto: ["+produto.getNome()+"]");
+                        nome = scanner.nextLine();
+                        System.out.print("Digite a nova descrição do produto: ["+produto.getDescricao()+"]");
+                        descricao = scanner.nextLine();
+                        System.out.print("Digite a nova url da foto do produto: ["+produto.getUrlFoto()+"]");
+                        urlFoto = scanner.nextLine();
+                        System.out.print("Digite o novo valor mínimo do produto: ["+produto.getValorMinimo()+"]");
+                        valorMinimo = scanner.nextDouble();
+                        scanner.nextLine();
+                        produto.setNome(nome.equals("") ? produto.getNome() : nome);
+                        produto.setDescricao(descricao.equals("") ? produto.getDescricao() : descricao);
+                        produto.setUrlFoto(urlFoto.equals("") ? produto.getUrlFoto() : urlFoto);
+                        produto.setValorMinimo(valorMinimo == 0 ? produto.getValorMinimo() : valorMinimo);
+                        result = ProdutoApi.editar(token, produto);
+                        
+                        if(!result) {
+                            System.out.println("Erro ao editar produto");
+                            continue;
+                        }
+                        
+                        limparConsole();
+                        System.out.println("Produto editado com sucesso");
+                        opcao = -1;
+                        break;
+                    case 4:
+                        System.out.print("Digite o id do produto que deseja leiloar: ");
+                        id = scanner.nextInt();
+                        scanner.nextLine();
+                        result = ProdutoApi.leiloar(token, id);
+                        
+                        if(!result) {
+                            System.out.println("Erro ao leiloar produto");
+                            continue;
+                        }
+                        
+                        limparConsole();
+                        System.out.println("Produto leiloado com sucesso");
+                        opcao = -1;
+                        break;
+                    case 5:
+                        System.out.print("Digite o id do produto que deseja deletar: ");
+                        id = scanner.nextInt();
+                        scanner.nextLine();
+                        result = ProdutoApi.deletar(token, id);
+                        
+                        if(!result) {
+                            System.out.println("Erro ao deletar produto");
+                            continue;
+                        }
+                        
+                        limparConsole();
+                        System.out.println("Produto deletado com sucesso");
+                        opcao = -1;
+                        break;
                     case 0:
                         System.out.println("Até mais "+info.getNome());
                         System.exit(0);
