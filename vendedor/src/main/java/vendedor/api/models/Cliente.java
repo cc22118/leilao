@@ -36,8 +36,10 @@ public class Cliente implements IConvertJson {
             throw new IllegalArgumentException("nome não pode ser nulo");
 
         this.id = id;
+        this.nome = nome;
         this.cargo = cargo;
         this.email = email;
+        this.senha = senha;
         this.endereco = endereco;
     }
 
@@ -79,6 +81,8 @@ public class Cliente implements IConvertJson {
     }
 
     public String toJson() {
-        return new Gson().toJson(this);
+        String result = new Gson().toJson(this);
+        System.out.println(result);
+        return result;
     }
 }

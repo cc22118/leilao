@@ -62,6 +62,12 @@ public class Produto implements IConvertJson {
     this.valorMinimo = valorMinimo;
   }
 
+  @Override
+  public String toString() {
+    return "( id=" + id + ", criador=" + criador + ", nome=" + nome + ", descricao=" + descricao + ", urlFoto="
+        + urlFoto + ", valorMinimo=" + valorMinimo + " )";
+  }
+
   public String toJson() {
     return new Gson().toJson(this);
   }
