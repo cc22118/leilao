@@ -1,0 +1,55 @@
+main#produto {
+  display: flex;
+  height: 100vh;
+  flex-direction: column;
+  align-items: center;
+  gap: 2rem;
+}
+
+main#produto > img {
+  width: 40vw;
+}
+
+main#produto h1 {
+  font-size: 1.2rem;
+  font-weight: 400;
+}
+
+main#produto h2 {
+  margin-top: 1rem;
+  font-size: 1rem;
+  font-weight: 400;
+}
+
+main#produto div {
+  width: 50vw;
+  text-align: center;
+}
+.criador {
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+  justify-content: center;
+  color: #a17253;
+  transition: 0.8s;
+}
+
+.criador > img {
+  transition: 0.2s;
+}
+
+.criador:hover > img {
+  transform: scale(1.1);
+}
+
+.criador:hover {
+  opacity: 0.8;
+  text-decoration: underline;
+}
+
+.criador > img {
+  width: 4rem;
+  height: 4rem;
+  border-radius: 2.5rem;
+}

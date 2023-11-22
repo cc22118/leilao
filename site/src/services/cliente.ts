@@ -1,5 +1,20 @@
 import BaseConnect from "./base_connect"
 
+export interface Cliente {
+  nome: string;
+  email: string;
+  urlAvatar: string;
+  cargo: string;
+}
+
+export interface ClienteToken {
+
+}
+
+export interface ClienteInfo {
+  
+}
+
 export default class ClienteConnection extends BaseConnect {
   static base_path = '/user';
 
@@ -9,12 +24,12 @@ export default class ClienteConnection extends BaseConnect {
   }
 
   static async BuscarPorId(id: number) {
-    const response = await this.get(`${this.base_path}/list/:id`, { params: { id } });
+    const response = await this.get(`${this.base_path}/:id`, { params: { id } });
     return response;
   }
 
   static async Criar(data: object) {
-    const response = await this.post(`${this.base_path}/create`, data);
+    const response = await this.post(`${this.base_path}/`, data);
     return response;
   }
   
@@ -33,8 +48,12 @@ export default class ClienteConnection extends BaseConnect {
     return response;
   }
 
-  static async info() {
-    const response = await this.get(`${this.base_path}/info`);
+  static async info(token: string) {
+    const response = await this.get(`${this.base_path}/info`, {
+      headers: {
+        'Authorization': `Bearer ${token}`
+      }
+    });
     return response;
   }
 

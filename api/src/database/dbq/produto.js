@@ -5,8 +5,11 @@ module.exports = {
     criar: async (produto) => {
         try {
             await getConnection().query(`
-                insert INTO pratica.Produto values 
+                insert INTO pratica.Produto 
+                (criador, nome, descricao, urlFoto, valorMinimo)
+                values 
                 (
+                    ${produto.criador},
                     '${produto.nome}',
                     '${produto.descricao}',
                     '${produto.urlFoto}',
@@ -50,7 +53,7 @@ module.exports = {
     buscarId: async (id) => {
         try {
             const result = await getConnection().query(`
-                select * from pratica.Produto
+                select * from pratica.ProdutoCriador
                 where id = ${id}
             `)
             return result.recordset[0]

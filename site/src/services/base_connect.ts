@@ -7,59 +7,56 @@ export default class BaseConnect {
     return Object.keys(params).reduce((acc, key) => acc.replace(`:${key}`, (params as any)[key]), path);
   }
 
-  private static handleData(value: object | string | undefined) { 
-    if(!value) return undefined;
-    if(typeof value === 'string') return value;
+  private static handleData(value?: object) { 
+    if(!value) return null;
     return JSON.stringify(value);
   }
 
-  private static handleQuery(value: string | object | undefined) {
+  private static handleQuery(value?: { [key: string]: string }) {
     if(!value) return '';
-    if(typeof value === 'string') return value;
-    return "?"+Object.keys(value).map(key => `${key}=${(value as any)[key]}`).join('&');
+    return "?"+Object.keys(value).map(key => `${key}=${value[key]}`).join('&');
   }
 
-  private static handleHeaders(value: HeadersInit | undefined, typeOfData: string) {
-    if(typeOfData === 'object')
+  private static handleHeaders(value?: HeadersInit) {
       return {
         'Content-Type': 'application/json',
+        'Accept': 'application/json',
         ...value,
       }
-    return value;
   }
 
-  static async get(path: string, config?: { params?: object, data?: object | string, query?: Object, headers?: HeadersInit }) {
+  protected static async get(path: string, config?: { params?: object, data?: object, query?: { [key: string]: string }, headers?: HeadersInit }) {
     const response = await fetch(`${this.url}${this.handleParamsInPath(path, config?.params)}${this.handleQuery(config?.query)}`, {
       method: 'GET',
       body: this.handleData(config?.data),
-      headers: this.handleHeaders(config?.headers, typeof config?.data),
+      headers: this.handleHeaders(config?.headers),
     });
     return response;
   }
 
-  static async post(path: string, data: object | string, config?: { params?: object, query?: Object, headers?: HeadersInit }) {
+  protected static async post(path: string, data: object, config?: { params?: object, query?: { [key: string]: string }, headers?: HeadersInit }) {
     const response = await fetch(`${this.url}${this.handleParamsInPath(path, config?.params)}${this.handleQuery(config?.query)}`, {
       method: 'POST',
       body: this.handleData(data),
-      headers: this.handleHeaders(config?.headers, typeof data),
+      headers: this.handleHeaders(config?.headers),
     });
     return response;
   }
 
-  static async put(path: string, data: object | string, config?: { params?: object, query?: Object, headers?: HeadersInit }) {
+  protected static async put(path: string, data: object, config?: { params?: object, query?: { [key: string]: string }, headers?: HeadersInit }) {
     const response = await fetch(`${this.url}${this.handleParamsInPath(path, config?.params)}${this.handleQuery(config?.query)}`, {
       method: 'PUT',
       body: this.handleData(data),
-      headers: this.handleHeaders(config?.headers, typeof data),
+      headers: this.handleHeaders(config?.headers),
     });
     return response;
   }
 
-  static async delete(path: string, config?: { params?: object, data?: object | string, query?: Object, headers?: HeadersInit }) {
+  protected static async delete(path: string, config?: { params?: object, data?: object, query?: { [key: string]: string }, headers?: HeadersInit }) {
     const response = await fetch(`${this.url}${this.handleParamsInPath(path, config?.params)}${this.handleQuery(config?.query)}`, {
       method: 'DELETE',
       body: this.handleData(config?.data),
-      headers: this.handleHeaders(config?.headers, typeof config?.data),
+      headers: this.handleHeaders(config?.headers),
     });
     return response;
   }

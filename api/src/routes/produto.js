@@ -8,7 +8,14 @@ const Leilao = require("../database/dba/leilao")
 const produtoRoutes = express.Router()
 
 produtoRoutes.get("/list/all", async (req, res) => {
-  return res.status(200).json(await ProdutoDBQ.buscarTodos())
+  const { id_vendedor } = req.query
+
+  const produtos = await ProdutoDBQ.buscarTodos()
+
+  if(!produtos)
+    return res.status(400).json({ error: "erro ao buscar produtos" })
+
+  return res.status(200).json(produtos.filter(produto => !id_vendedor || produto.criador === parseInt(id_vendedor)))
 })
 
 produtoRoutes.get("/list", async (req, res) => {
@@ -21,11 +28,23 @@ produtoRoutes.get("/list", async (req, res) => {
   return res.status(200).json(produtos.filter(produto => (id_vendedor && produto.criador === parseInt(id_vendedor))))
 })
 
+produtoRoutes.get("/:id", async (req, res) => {
+  const { id } = req.params
+
+  const produto = await ProdutoDBQ.buscarId(parseInt(id))
+
+  if(!produto)
+    return res.status(400).json({ error: "produto não encontrado" })
+
+  return res.status(200).json(produto)
+})
+
 //------------[ Middlewares de login ]------------//
 
 produtoRoutes.use(logadoMiddleware)
 
 //---------------[ Somente Logado ]---------------//
+
 
 produtoRoutes.post("/", async (req, res) => {
     const { nome, descricao, urlFoto, valorMinimo } = req.body
@@ -124,7 +143,7 @@ produtoRoutes.put("/:id", async (req, res) => {
     if(!id)
       return res.status(400).json({ error: "parâmetros incorretos ou tipos inválidos" })
     
-    const produto = await ProdutoDBQ.buscarPorId(id)
+    const produto = await ProdutoDBQ.buscarId(id)
     if(!produto)
       return res.status(400).json({ error: "produto não encontrado" })
     

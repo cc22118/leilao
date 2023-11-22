@@ -28,6 +28,20 @@ clienteRoutes.post("/", async (req, res) => {
     return res.status(201).json({ message: "cliente criado com sucesso" })
 })
 
+clienteRoutes.get("/:id", async (req, res) => {
+    const { id } = req.params
+
+    if(Cliente.validaId(id))
+        return res.status(400).json({ error: "id inválido" })
+
+    const cliente = await ClienteDBQ.buscarId(id)
+
+    if(!cliente)
+        return res.status(404).json({ error: "cliente não encontrado" })
+    
+    return res.status(200).json(cliente)
+})
+
 //------------[ Middlewares de login ]------------//
 
 clienteRoutes.use(logadoMiddleware)
@@ -44,28 +58,13 @@ clienteRoutes.get("/info", async (req, res) => {
     return res.status(200).json(req.user)
 })
 
-clienteRoutes.get("/:id", async (req, res) => {
-    const { id } = req.params
-    if(req.user.cargo !== "admin" && req.user.id != id)
-        return res.status(403).json({ error: "você não possui autorização" })
-    if(Cliente.validaId(id))
-        return res.status(400).json({ error: "id inválido" })
-
-    const cliente = await ClienteDBQ.buscarId(id)
-
-    if(!cliente)
-        return res.status(404).json({ error: "cliente não encontrado" })
-    
-    return res.status(200).json(cliente)
-})
-
 clienteRoutes.put("/:id", async (req, res) => {
     const { id } = req.params
     const { cargo, nome, email, endereco, senha, urlAvatar } = req.body
     if(req.user.cargo !== "admin" || req.user.id != id)
-        res.status(403).json({ error: "você não possui autorização" })
+        return res.status(403).json({ error: "você não possui autorização" })
     if(Cliente.validaId(id) && (!cargo || Cliente.validaCargo(cargo)) && (!nome || Cliente.validaNome(nome)) && (!email || Cliente.validaEmail(email)) && (!endereco || Cliente.validaEndereco(endereco)) && (!senha || Cliente.validaSenha(senha)) && (!urlAvatar || Cliente.validaUrlAvatar(urlAvatar)))
-        res.status(400).json({ error: "parâmetros incorretos ou tipos inválidos" })
+        return res.status(400).json({ error: "parâmetros incorretos ou tipos inválidos" })
 
     const cliente = await ClienteDBQ.buscarId(id)
 

@@ -1,4 +1,5 @@
 const express = require("express")
+const LanceDBQ = require("../database/dbq/lance")
 const logadoMiddleware = require("../middleware/logado")
 
 const lanceRoutes = express.Router()

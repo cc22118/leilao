@@ -1,0 +1,130 @@
+@import url('https://fonts.googleapis.com/css2?family=Inknut+Antiqua:wght@300;400;500;600;700;800;900&display=swap');
+
+html, body, div, span, applet, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var,
+b, u, i, center,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td,
+article, aside, canvas, details, embed, 
+figure, figcaption, footer, header, hgroup, 
+menu, nav, output, ruby, section, summary,
+time, mark, audio, video, hr {
+	margin: 0;
+	padding: 0;
+	border: 0;
+	font-size: 100%;
+	font: inherit;
+	vertical-align: baseline;
+	font-family: 'Inknut Antiqua', serif;
+}
+/* HTML5 display-role reset for older browsers */
+article, aside, details, figcaption, figure, 
+footer, header, hgroup, menu, nav, section {
+	display: block;
+}
+body {
+	line-height: 1;
+  background-color: #DFC8B5;
+}
+ol, ul {
+	list-style: none;
+}
+blockquote, q {
+	quotes: none;
+}
+blockquote:before, blockquote:after,
+q:before, q:after {
+	content: '';
+	content: none;
+}
+table {
+	border-collapse: collapse;
+	border-spacing: 0;
+}
+
+.logo {
+	display: block;
+	margin: 20px auto;
+}
+
+input {
+	border-radius: 10px;
+	border: 2px solid #000;
+	background: rgba(87, 67, 48, 0.42);
+	color: rgba(0, 0, 0, 0.50);
+	padding: 2px 8px;
+
+	width: 100%;
+
+	font-size: 1.5rem;
+	font-style: normal;
+	font-weight: 400;
+	line-height: normal;
+}
+
+input:focus {
+	outline: none;
+}
+
+main {
+	display: block;
+	width: 100%;
+	max-width: calc(100vw - 30rem);
+	height: max-content;
+	min-height: calc(100vh - 40px - 150px - 15rem);
+	padding: 5rem 10rem;
+	border-radius: 2.5rem;
+	margin: auto;
+}
+
+/*centraliza no eixo y */
+.p9 {
+	width: 90%;
+}
+.center {
+	display: block;
+	margin: 0 auto;
+}
+.fit {
+	width: fit-content;
+}
+
+.text-error {
+	color: #881414;
+	font-size: 2.5rem;
+}
+
+a {
+	color: #513A24;
+	text-decoration: none;
+}
+
+a:hover {
+	text-decoration: underline;
+}
+
+button {
+	cursor: pointer;
+	padding: 0.4rem 1.4rem;
+	font-size: 1.8rem;
+	border-radius: 0.5rem;
+	border: 0.1rem solid #000;
+	background: rgba(255, 232, 211, 0.42);
+}
+
+hr {
+	border-top: 0.1rem solid #574330;
+}
+
+button:active {
+	background: rgba(255, 232, 211, 0.82);
+}
+
+main#color {
+	background-color: #C39F7F;
+	box-shadow: 5px 8px 10px 0px rgba(0, 0, 0, 0.25);
+}
