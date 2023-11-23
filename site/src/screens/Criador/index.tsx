@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react"
 import { Link, useParams } from "react-router-dom"
 
-import ProductConnection, { Product } from "../../services/product"
+import ProductConnection, { ProductAuction } from "../../services/product"
 import "./style.css"
 import ClienteConnection, { Cliente } from "../../services/cliente"
 import validateToken from "../../services/token"
@@ -9,7 +9,7 @@ import validateToken from "../../services/token"
 export default function Criador() {
   const { id } = useParams()
   
-  const [produtos, setProdutos] = useState<Array<Product>>([])
+  const [produtos, setProdutos] = useState<Array<ProductAuction>>([])
   const [criador, setCriador] = useState<Cliente | false>()
 
   async function handleDados() {
@@ -48,7 +48,7 @@ export default function Criador() {
       <main className="listProdutos">
         {
           produtos.map((p, key) => (
-            <Link to={"/produto/"+p.id} key={key} id="product">
+            <Link to={"/produto/"+p.idLeilao} key={key} id="product">
               <img src={p.urlFoto} alt={p.nome} />
               <span>Mínimo: R$ {p.valorMinimo.toFixed(2)}</span>
             </Link>

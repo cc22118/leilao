@@ -5,29 +5,30 @@ module.exports = {
     criar: async (lance) => {
         try {
             await getConnection().query(`
-            insert INTO pratica.Lances values 
+            insert INTO pratica.Lance values 
             (
                 ${lance.idLeilao},
                 ${lance.idCliente},
-                ${lance.valor}
+                ${lance.valor},
+                ${lance.atualizadoEm}
             )
             `)
             return true
-        } catch(e) {
-            console.log("Error na criação de Lance: "+err.code)
+        } catch(err) {
+            console.log("Error na criação de Lance: "+err)
             return false
         }
     },
     buscarUltimoLance: async (idLeilao) => {
         try {
             const result = await getConnection().query(`
-                select top 1 * from pratica.Lances
+                select top 1 * from pratica.Lance
                 where idLeilao = ${idLeilao}
                 order by valor desc
             `)
 
             return result.recordset[0]
-        } catch(e) {
+        } catch(err) {
             console.log("Error ao buscar último Lance: "+err.code)
             return false
         }
@@ -35,13 +36,13 @@ module.exports = {
     buscarPrimeiroLance: async (idLeilao) => {
         try {
             const result = await getConnection().query(`
-                select top 1 * from pratica.Lances
+                select top 1 * from pratica.Lance
                 where idLeilao = ${idLeilao}
                 order by valor asc
             `)
 
             return result.recordset[0]
-        } catch(e) {
+        } catch(err) {
             console.log("Error ao buscar primeiro Lance: "+err.code)
             return false
         }
@@ -49,24 +50,24 @@ module.exports = {
     buscarTodosDe: async (idLeilao) => {
         try {
             const results = await getConnection().query(`
-                select * from pratica.Lances
+                select * from pratica.Lance
                 where idLeilao = ${idLeilao}
             `)
 
             return results.recordset
-        } catch(e) {
-            console.log("Error ao buscar Lances de um Leilão: "+err.code)
+        } catch(err) {
+            console.log("Error ao buscar Lance de um Leilão: "+err.code)
             return false
         }
     },
     buscarTodos: async (id) => {
         try {
             const results = await getConnection().query(`
-                select * from pratica.Lances
+                select * from pratica.Lance
             `)
 
             return results.recordset
-        } catch(e) {
+        } catch(err) {
             console.log("Error ao buscar todos os Lances: "+err.code)
             return false
         }

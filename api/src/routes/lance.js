@@ -1,4 +1,5 @@
 const express = require("express")
+const Lance = require("../database/dba/lance")
 const LanceDBQ = require("../database/dbq/lance")
 const logadoMiddleware = require("../middleware/logado")
 
@@ -47,11 +48,13 @@ lanceRoutes.use(logadoMiddleware)
 //---------------[ Somente Logado ]---------------//
 
 lanceRoutes.post("/", async (req, res) => {
-    const { valor, idProduto } = req.body
-    if(!valor || !idProduto)
+    const { valor, idLeilao } = req.body
+    if(!valor || !idLeilao)
         return res.status(400).json({ error: "parâmetros incorretos ou tipos inválidos" })
 
-    const lance = await LanceDBQ.criar(new Lance(0, req.user.id, idProduto, valor))
+    const data = new Date()
+
+    const lance = await LanceDBQ.criar(new Lance(idLeilao, req.user.id, valor, `${data.getDay()}-${data.getMonth()}-${data.getFullYear()}`))
     if(!lance)
         return res.status(400).json({ error: "erro ao criar lance" })
     return res.status(201).json({ message: "lance criado com sucesso" })

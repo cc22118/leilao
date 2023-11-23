@@ -23,17 +23,17 @@ export default function Cadastro() {
       <br />
       <br />
       <h1>Endereço</h1>
-      <input type="text" value={senha} onChange={e => setSenha(e.target.value)} required />
+      <input type="text" value={endereco} onChange={e => setEndereco(e.target.value)} required />
       <br />
       <br />
       <br />
       <h1>Senha</h1>
-      <input type="password" value={endereco} onChange={e => setEndereco(e.target.value)} required />
+      <input type="password" value={senha} onChange={e => setSenha(e.target.value)} required />
       <br />
       <br />
       <br />
       <button className="center" onClick={() => {
-        ClienteConnection.Criar({ nome, email, senha, urlAvatar: null, endereco, cargo: "cliente" })
+        ClienteConnection.Criar({ nome, email, endereco, senha, urlAvatar: null, cargo: "cliente" })
           .then(async (e) => {
             if (!e.ok) return alert("Erro ao cadastrar, tente novamente mais tarde")
             window.location.href = "/login"

@@ -1,12 +1,12 @@
 import { useEffect, useState } from "react"
 import "./style.css"
-import ProductConnection, { Product } from "../../services/product"
+import ProductConnection, { Product, ProductAuction } from "../../services/product"
 import { Link } from "react-router-dom"
 import validateToken from "../../services/token"
 
 export default function Home() {
-  const [products, setProducts] = useState<Array<Product>>([])
-  const [filtered, setFiltered] = useState<Array<Product>>([])
+  const [products, setProducts] = useState<Array<ProductAuction>>([])
+  const [filtered, setFiltered] = useState<Array<ProductAuction>>([])
   const [search, setSearch] = useState<string>("")
 
   async function handleProducts() {
@@ -58,7 +58,7 @@ export default function Home() {
           </button>
         </div>
         <div className="user">
-          <img src="https://avatars.githubusercontent.com/u/60078669?v=4" alt="avatar" />
+          <img src="https://publicdomainvectors.org/tn_img/abstract-user-flat-4.webp" alt="avatar" />
           <ul className="flutuante">
             <li onClick={() =>     document.location.replace("/profile")}>Ver Dados</li>
             <li onClick={deslogar}>Sair</li>
@@ -71,7 +71,7 @@ export default function Home() {
       <main className="listProdutos">
         {
           filtered.map((product, key) => (
-            <Link to={"/produto/"+product.id} key={key} id="product">
+            <Link to={"/produto/"+product.idLeilao} key={key} id="product">
               <img src={product.urlFoto} alt={product.nome} />
               <span>Mínimo: R$ {product.valorMinimo.toFixed(2)}</span>
             </Link>

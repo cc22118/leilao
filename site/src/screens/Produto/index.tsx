@@ -1,55 +1,112 @@
 import { useEffect, useState } from "react"
 import { Link, useParams } from "react-router-dom"
 
-import ProductConnection, { Product } from "../../services/product"
+import ProductConnection, { Product, ProductAuction } from "../../services/product"
 import "./style.css"
-import LanceConnection from "../../services/lance"
+import LanceConnection, { Lance } from "../../services/lance"
 import validateToken from "../../services/token"
 
 export default function Produto() {
   const { id } = useParams()
   
   const [produto, setProduto] = 
-  useState<(Product & {
+  useState<(ProductAuction & {
+    idLeilao: number
     id_criador: number
     nome_criador: string
     avatar_criador: string
-    primeiro_lance?: number
-    ultimo_lance?: number
   }) | false>()
 
-  async function handleProduto() {
-    await ProductConnection.getById(parseInt(id!!))
-      .then(async (e) => {
-        if(!e.ok) return setProduto(false)
-        setProduto(await e.json())
+  const [lances, setLances] = useState<Array<Lance>>([])
+
+  const [valor, setValor] = useState<number>(0)
+
+  async function handleDados() {
+    await ProductConnection.getByIdLeilao(parseInt(id!!))
+      .then(async (l) => {
+        if(!l.ok) return setProduto(false)
+        const leilao = await l.json()
+        await ProductConnection.getById(leilao.idProduto)
+        .then(async (e) => {
+          if(!e.ok) return setProduto(false)
+          setProduto({
+            ...leilao,
+            ...await e.json()
+          })
+        })
+        .catch(e => {
+          setProduto(false);
+        })
       })
       .catch(e => {
         setProduto(false);
       })
+
+    setLances(await LanceConnection.BuscarLances(parseInt(id!!)))
   }
 
   useEffect(() => {
-    // validar token
+    setLances(lances.sort((a, b) => a.valor - b.valor))
+  }, [lances])
+
+  useEffect(() => {
     if(!validateToken())
       window.location.href = "/login"
 
-    handleProduto()
+      handleDados()
   }, [])
 
   return produto ? (
-    <main id="produto">
+    <>
+    <div id="produto">
       <Link to={"/criador/"+produto.id_criador} className="criador">
         <img src={produto.avatar_criador} alt="" />
         <p>{produto.nome_criador}</p>
       </Link>
+      <div className="info">
       <img src={produto.urlFoto} alt={produto.nome} />
       <div>
         <h1>{produto.nome}</h1>
         <h2>{produto.descricao}</h2>
         <p>{produto.valorMinimo}</p>
       </div>
-    </main>
+      </div>
+    </div>
+      <div className="center lances">
+        <h1>Lances</h1>
+        <br />
+        <table>
+            <tr>
+              <th>Valor</th>
+              <th>Data</th>
+            </tr>
+            {lances.map(e => (
+              <tr>
+                <td>R$ {e.valor.toFixed(2)}</td>
+                <td>{e.atualizadoEm}</td>
+              </tr>
+            ))}
+        </table>
+        <br />
+        <input type="number" value={valor} onChange={e => setValor(parseInt(e.target.value))} />
+        <br />
+        <br />
+        <button onClick={async () => {
+          await LanceConnection.Criar({
+            idLeilao: produto.idLeilao,
+            valor
+          }, localStorage.getItem("token")!!)
+            .then(e => {
+              if(!e) return alert("Erro ao dar lance")
+              setValor(0)
+            }).catch(e => {
+              alert("Erro ao dar lance")
+              setValor(0)
+            })
+          handleDados()
+        }}>Dar lance</button>
+      </div>
+    </>
   ) : produto === false? (
     <>
       <h1>Erro 404</h1>

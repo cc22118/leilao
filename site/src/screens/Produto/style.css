@@ -1,27 +1,40 @@
-main#produto {
+div#produto {
   display: flex;
-  height: 100vh;
+  margin-bottom: 5rem;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
   gap: 2rem;
 }
 
-main#produto > img {
-  width: 40vw;
+div#produto > .info > img {
+  width: 30vw;
 }
 
-main#produto h1 {
+div#produto > .info > div {
+  width: max-content;
+}
+
+div#produto > .info {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+
+
+div#produto h1 {
   font-size: 1.2rem;
   font-weight: 400;
 }
 
-main#produto h2 {
+div#produto h2 {
   margin-top: 1rem;
   font-size: 1rem;
   font-weight: 400;
 }
 
-main#produto div {
+div#produto div {
   width: 50vw;
   text-align: center;
 }
@@ -52,4 +65,38 @@ main#produto div {
   width: 4rem;
   height: 4rem;
   border-radius: 2.5rem;
+}
+
+table, th, td {
+border: 1px solid black;
+}
+
+table {
+border-collapse: collapse;
+margin: auto;
+}
+
+th, td{
+padding: 10px;
+text-align: center;
+width: 120px;
+}
+
+th{
+font-weight: bold;
+}
+
+
+tr:nth-child(even) {
+background-color: #e9cabb;
+}
+
+tr:hover:nth-child(1n + 2) {
+background-color: #635208;
+color: #fff;
+}
+
+div.lances {
+  width: fit-content;
+  text-align: center;
 }

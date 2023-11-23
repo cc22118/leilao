@@ -65,7 +65,7 @@ module.exports = {
     buscarTodos: async (id) => {
         try {
             const results = await getConnection().query(`
-                select * from pratica.Produto
+                select * from pratica.LeiaoProduto
             `)
             return results.recordset
         } catch(err) {

@@ -28,6 +28,17 @@ produtoRoutes.get("/list", async (req, res) => {
   return res.status(200).json(produtos.filter(produto => (id_vendedor && produto.criador === parseInt(id_vendedor))))
 })
 
+produtoRoutes.get("/list/auction/:id", async (req, res) => {
+  const { id } = req.params
+
+  const leilao = await ProdutoDBQ.buscarTodos()
+
+  if(!leilao)
+    return res.status(400).json({ error: "leilão não encontrado" })
+
+  return res.status(200).json(leilao.find(leilao => leilao.idLeilao === parseInt(id)))
+})
+
 produtoRoutes.get("/:id", async (req, res) => {
   const { id } = req.params
 
@@ -63,6 +74,7 @@ produtoRoutes.post("/", async (req, res) => {
 
 produtoRoutes.post("/:id/auction", async (req, res) => {
   const { id } = req.params
+  const { dataInicio, dataFim } = req.body
 
   if(req.user.cargo !== "admin" && req.user.cargo !== "vendedor")
     return res.status(403).json({ error: "você não possui autorização" })
@@ -70,15 +82,15 @@ produtoRoutes.post("/:id/auction", async (req, res) => {
   if(!id)
     return res.status(400).json({ error: "parâmetros incorretos ou tipos inválidos" })
 
-  const produto = await ProdutoDBQ.buscarPorId(id)
+  const produto = await ProdutoDBQ.buscarId(id)
 
   if(!produto)
     return res.status(400).json({ error: "produto não encontrado" })
 
-  if(produto.id_vendedor !== req.user.id)
+  if(produto.id_criador != req.user.id)
     return res.status(403).json({ error: "você não possui autorização" })
 
-  if(!await LeilaoDBQ.criar(Leilao(0, id, new Date(), new Date())))
+  if(!await LeilaoDBQ.criar(new Leilao(0, id, dataInicio, dataFim)))
     return res.status(400).json({ error: "erro ao criar leilão" })
   return res.status(201).json({ message: "leilão criado com sucesso" })
 })

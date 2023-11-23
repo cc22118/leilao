@@ -1,9 +1,12 @@
 import BaseConnect from "./base_connect"
 
 export interface Cliente {
+  id: number;
   nome: string;
   email: string;
+  endereco: string;
   urlAvatar: string;
+  senha: string;
   cargo: string;
 }
 
@@ -24,7 +27,7 @@ export default class ClienteConnection extends BaseConnect {
   }
 
   static async BuscarPorId(id: number) {
-    const response = await this.get(`${this.base_path}/:id`, { params: { id } });
+    const response = await this.get(`${this.base_path}/find/:id`, { params: { id } });
     return response;
   }
 
@@ -38,13 +41,17 @@ export default class ClienteConnection extends BaseConnect {
     return response;
   }
 
-  static async Atualizar(id: number, data: object) {
-    const response = await this.put(`${this.base_path}/:id`, data, { params: { id } });
+  static async Atualizar(id: number, data: object, token: string) {
+    const response = await this.put(`${this.base_path}/:id`, data, { params: { id }, headers: {
+      'Authorization': `Bearer ${token}`
+    } });
     return response;
   }
 
-  static async Deletar(id: number) {
-    const response = await this.delete(`${this.base_path}/:id`, { params: { id } });
+  static async Deletar(id: number, token: string) {
+    const response = await this.delete(`${this.base_path}/:id`, { params: { id }, headers: {
+      'Authorization': `Bearer ${token}`
+    } });
     return response;
   }
 

@@ -9,6 +9,13 @@ export interface Product {
   valorMinimo: number
 }
 
+export interface ProductAuction extends Product {
+  idLeilao: number
+  idProduto: number
+  dataInicio: string
+  dataFim: string
+}
+
 export default class ProductConnection extends BaseConnect {
   static async getAll() {
     return await this.get("/product/list/all")
@@ -20,5 +27,9 @@ export default class ProductConnection extends BaseConnect {
 
   static async getById(id: number) {
     return await this.get("/product/:id", { params: {id} })
+  }
+
+  static async getByIdLeilao(idLeilao: number) {
+    return await this.get("/product/list/auction/:idLeilao", { params: {idLeilao} })
   }
 }

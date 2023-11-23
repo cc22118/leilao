@@ -8,8 +8,6 @@ const clienteRoutes = express.Router()
 
 clienteRoutes.post("/login", async (req, res) => {
     const { email, senha } = req.body
-    if(Cliente.validaEmail(email) && Cliente.validaSenha(senha))
-        res.status(401).json({ error: "parâmetros incorretos ou tipos inválidos" })
 
     const jwt = await ClienteDBQ.logar(email, senha)
     if(!jwt)
@@ -28,7 +26,7 @@ clienteRoutes.post("/", async (req, res) => {
     return res.status(201).json({ message: "cliente criado com sucesso" })
 })
 
-clienteRoutes.get("/:id", async (req, res) => {
+clienteRoutes.get("/find/:id", async (req, res) => {
     const { id } = req.params
 
     if(Cliente.validaId(id))
@@ -55,13 +53,14 @@ clienteRoutes.get("/list/all", async (req, res) => {
 })
 
 clienteRoutes.get("/info", async (req, res) => {
+    console.log(req.user)
     return res.status(200).json(req.user)
 })
 
 clienteRoutes.put("/:id", async (req, res) => {
     const { id } = req.params
     const { cargo, nome, email, endereco, senha, urlAvatar } = req.body
-    if(req.user.cargo !== "admin" || req.user.id != id)
+    if(req.user.cargo !== "admin" && req.user.id != id)
         return res.status(403).json({ error: "você não possui autorização" })
     if(Cliente.validaId(id) && (!cargo || Cliente.validaCargo(cargo)) && (!nome || Cliente.validaNome(nome)) && (!email || Cliente.validaEmail(email)) && (!endereco || Cliente.validaEndereco(endereco)) && (!senha || Cliente.validaSenha(senha)) && (!urlAvatar || Cliente.validaUrlAvatar(urlAvatar)))
         return res.status(400).json({ error: "parâmetros incorretos ou tipos inválidos" })

@@ -8,13 +8,13 @@ module.exports = {
                 insert INTO pratica.Leilao values 
                 (
                     ${leilao.idProduto},
-                    '${leilao.dataInicio}',
-                    '${leilao.dataFim}'
+                    ${leilao.dataInicio},
+                    ${leilao.dataFim}
                 )
             `)
             return true
         } catch (err) {
-            console.log("Error na criação de Leilão: "+err.code)
+            console.log("Error na criação de Leilão: "+err)
             return false
         }
     },

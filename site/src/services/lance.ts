@@ -5,7 +5,7 @@ export interface Lance {
   idLeilao: number;
   idCliente: number;
   valor: number;
-  atualizadoEm: Date;
+  atualizadoEm: string;
 }
 
 export default class LanceConnection extends BaseConnect {
@@ -48,9 +48,16 @@ export default class LanceConnection extends BaseConnect {
     return response;
   }
 
-  static async Criar(data: Omit<Lance, 'id' | "idCliente" | 'atualizadoEm'>) {
-    const response = await this.post(`${this.base_path}/create`, data)
-      .then(res => res.status === 201? true : false)
+  static async Criar(data: Omit<Lance, 'id' | "idCliente" | 'atualizadoEm'>, token: string) {
+    const response = await this.post(`${this.base_path}/`, data, {
+      headers: {
+        'Authorization': `Bearer ${token}`
+      }
+    })
+      .then(res => {
+        console.log(res);
+        return res.ok
+      })
       .catch(err => {
         throw err;
       });

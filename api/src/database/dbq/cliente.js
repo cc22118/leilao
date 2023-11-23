@@ -6,7 +6,9 @@ module.exports  = ClienteDBQ = {
     criar: async (cliente) => {
         try {
             await getConnection().query(`
-                insert INTO pratica.Cliente values 
+                insert INTO pratica.Cliente
+                (nome, email, endereco, senha, urlAvatar, cargo)
+                values 
                 (
                     '${cliente.nome}',
                     '${cliente.email}',
