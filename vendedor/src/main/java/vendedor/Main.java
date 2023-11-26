@@ -6,6 +6,7 @@ import vendedor.api.ClienteApi;
 import vendedor.api.ProdutoApi;
 import vendedor.api.models.ResponseInfo;
 import vendedor.api.models.Cliente;
+import vendedor.api.models.Leilao;
 import vendedor.api.models.Produto;
 import vendedor.api.models.ResponseToken;
 
@@ -44,8 +45,7 @@ public class Main {
                     System.out.println("Erro: email já cadastrado, ou algum campo está vazio ou incorreto");
                 }
             }
-
-        if(opcao == 2)
+        else if(opcao == 2)
             while(true) {
                 try {
                     System.out.print("Digite seu email: ");
@@ -93,6 +93,10 @@ public class Main {
                         System.out.print("Digite o valor mínimo do produto: ");
                         double valorMinimo = scanner.nextDouble();
                         scanner.nextLine();
+                        if(nome.equals("") || descricao.equals("") || urlFoto.equals("") || valorMinimo == 0) {
+                            System.out.println("Erro: algum campo está vazio");
+                            continue;
+                        }
                         boolean result = ProdutoApi.criar(token, new Produto(1, info.getId(), nome, descricao, urlFoto, valorMinimo));
                         
                         if(!result) {
@@ -131,8 +135,11 @@ public class Main {
                         System.out.print("Digite a nova url da foto do produto: ["+produto.getUrlFoto()+"]");
                         urlFoto = scanner.nextLine();
                         System.out.print("Digite o novo valor mínimo do produto: ["+produto.getValorMinimo()+"]");
-                        valorMinimo = scanner.nextDouble();
-                        scanner.nextLine();
+                        try {
+                            valorMinimo = Double.parseDouble(scanner.nextLine());
+                        } catch (Exception e) {
+                            valorMinimo = 0;
+                        }
                         produto.setNome(nome.equals("") ? produto.getNome() : nome);
                         produto.setDescricao(descricao.equals("") ? produto.getDescricao() : descricao);
                         produto.setUrlFoto(urlFoto.equals("") ? produto.getUrlFoto() : urlFoto);
@@ -152,7 +159,11 @@ public class Main {
                         System.out.print("Digite o id do produto que deseja leiloar: ");
                         id = scanner.nextInt();
                         scanner.nextLine();
-                        result = ProdutoApi.leiloar(token, id);
+                        System.out.print("Digite o dia que inicia o leilão: [mm-dd-aaaa] ");
+                        String dataInicio = scanner.nextLine();
+                        System.out.print("Digite o dia que termina o leilão: [mm-dd-aaaa] ");
+                        String dataFim = scanner.nextLine();
+                        result = ProdutoApi.leiloar(token, new Leilao(1, id, dataInicio, dataFim));
                         
                         if(!result) {
                             System.out.println("Erro ao leiloar produto");

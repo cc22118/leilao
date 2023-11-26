@@ -45,6 +45,10 @@ export default function Produto() {
     setLances(await LanceConnection.BuscarLances(parseInt(id!!)))
   }
 
+  function convertDate(date: string) {
+    return new Date(date);
+  }
+
   useEffect(() => {
     setLances(lances.sort((a, b) => a.valor - b.valor))
   }, [lances])
@@ -68,11 +72,17 @@ export default function Produto() {
       <div>
         <h1>{produto.nome}</h1>
         <h2>{produto.descricao}</h2>
-        <p>{produto.valorMinimo}</p>
+        <p>Valor mínimo de R$ {produto.valorMinimo}</p>
       </div>
       </div>
     </div>
       <div className="center lances">
+        <h2>Abre para lances em: {convertDate(produto.dataInicio).toLocaleDateString()}</h2>
+        <h2>Fecha para lances em: {convertDate(produto.dataFim).toLocaleDateString()}</h2>
+        <h2>Valor mínimo de R$ {produto.valorMinimo}</h2>
+        <br />
+        <br />
+        <br />
         <h1>Lances</h1>
         <br />
         <table>
@@ -83,7 +93,7 @@ export default function Produto() {
             {lances.map(e => (
               <tr>
                 <td>R$ {e.valor.toFixed(2)}</td>
-                <td>{e.atualizadoEm}</td>
+                <td>{convertDate(e.atualizadoEm).toLocaleDateString()} {convertDate(e.atualizadoEm).toLocaleTimeString()}</td>
               </tr>
             ))}
         </table>
@@ -105,6 +115,11 @@ export default function Produto() {
             })
           handleDados()
         }}>Dar lance</button>
+        <br />
+        <br />
+        <br />
+        <br />
+        <br />
       </div>
     </>
   ) : produto === false? (

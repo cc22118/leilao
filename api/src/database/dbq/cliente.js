@@ -23,7 +23,7 @@ module.exports  = ClienteDBQ = {
             console.log("Error na criação de Cliente: "+err.code)
             return false
         }
-    },
+    }, 
     logar: async (email, senha) => {
         try {
             const result = await getConnection().query(`

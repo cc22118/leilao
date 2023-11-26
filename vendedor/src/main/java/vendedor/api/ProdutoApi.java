@@ -3,6 +3,7 @@ package vendedor.api;
 
 import com.google.gson.Gson;
 
+import vendedor.api.models.Leilao;
 import vendedor.api.models.Produto;
 import vendedor.api.models.ResponseInfo;
 import vendedor.api.models.ResponseToken;
@@ -23,7 +24,7 @@ public class ProdutoApi extends BaseApi {
   
   public static boolean editar(ResponseToken token, Produto produto) {
     try {
-      put(BASE_PATH+"/", null, token.getToken(), produto);
+      put(BASE_PATH+"/"+produto.getId(), null, token.getToken(), produto);
       
       return true;
     }
@@ -48,9 +49,9 @@ public class ProdutoApi extends BaseApi {
     catch (Exception e) { return null; }
   }
   
-  public static boolean leiloar(ResponseToken token, int id) {
+  public static boolean leiloar(ResponseToken token, Leilao leilao) {
     try {
-      post(BASE_PATH+"/"+id+"/auction", null, token.getToken(), "");
+      post(BASE_PATH+"/"+leilao.getIdProduto()+"/auction", null, token.getToken(), leilao.toJson());
       return true;
     }
     catch (Exception e) { return false; }

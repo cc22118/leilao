@@ -9,4 +9,4 @@ vendedor e/ou fazerem lances, caso haja grande disputa entre um produto.
     O objetivo do projeto é dar visibilidade a artistas pequenos e/ou independentes, para
     poderem anunciar seus produtos em um site já destinado aos amantes de arte e
     cultura, que podem acessar o ambiente virtual já com o propósito de encontrar artes
-    únicas e apoiar artistas.
+    únicas e apoiar artistas.fina

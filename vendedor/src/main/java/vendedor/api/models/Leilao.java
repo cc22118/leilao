@@ -9,12 +9,12 @@ import vendedor.api.utils.IConvertJson;
 public class Leilao implements IConvertJson {
   private int id;
   private int idProduto;
-  private Date dataInicio;
-  private Date dataFim;
+  private String dataInicio;
+  private String dataFim;
 
   public Leilao() {}
 
-  public Leilao(int id, int idProduto, Date dataInicio, Date dataFim) {
+  public Leilao(int id, int idProduto, String dataInicio, String dataFim) {
     if(id <= 0)
       throw new IllegalArgumentException("id não pode ser menor ou igual a 0");
     if(idProduto <= 0)
@@ -32,15 +32,15 @@ public class Leilao implements IConvertJson {
 
   public int getId() { return id; }
   public int getIdProduto() { return idProduto; }
-  public Date getDataInicio() { return dataInicio; }
-  public Date getDataFim() { return dataFim; }
+  public String getDataInicio() { return dataInicio; }
+  public String getDataFim() { return dataFim; }
 
-  public void setDataInicio(Date dataInicio) {
+  public void setDataInicio(String dataInicio) {
     if(dataInicio == null)
       throw new IllegalArgumentException("dataInicio não pode ser nulo");
     this.dataInicio = dataInicio;
   }
-  public void setDataFim(Date dataFim) {
+  public void setDataFim(String dataFim) {
     if(dataFim == null)
       throw new IllegalArgumentException("dataFim não pode ser nulo");
     this.dataFim = dataFim;

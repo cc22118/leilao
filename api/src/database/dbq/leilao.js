@@ -4,12 +4,13 @@ const getConnection = require("../connection")
 module.exports = {
     criar: async (leilao) => {
         try {
+            console.log(leilao)
             await getConnection().query(`
                 insert INTO pratica.Leilao values 
                 (
                     ${leilao.idProduto},
-                    ${leilao.dataInicio},
-                    ${leilao.dataFim}
+                    '${leilao.dataInicio}',
+                    '${leilao.dataFim}'
                 )
             `)
             return true
@@ -41,6 +42,18 @@ module.exports = {
             return results.recordset
         } catch (err) {
             console.log("Error ao buscar todos os Leilões: "+err.code)
+            return false
+        }
+    },
+    buscarTodosAbertos: async () => {
+        try {
+            const results = await getConnection().query(`
+                select * from pratica.LeiaoAbertoProduto
+            `)
+
+            return results.recordset
+        } catch (err) {
+            console.log("Error ao buscar todos os Leilões abertos: "+err.code)
             return false
         }
     }

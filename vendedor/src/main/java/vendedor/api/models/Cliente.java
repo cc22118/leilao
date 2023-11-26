@@ -1,7 +1,5 @@
 package vendedor.api.models;
 
-import java.util.Map;
-
 import com.google.gson.Gson;
 
 import vendedor.api.utils.IConvertJson;
@@ -82,7 +80,6 @@ public class Cliente implements IConvertJson {
 
     public String toJson() {
         String result = new Gson().toJson(this);
-        System.out.println(result);
         return result;
     }
 }

@@ -62,10 +62,21 @@ module.exports = {
             return false
         }
     },
-    buscarTodos: async (id) => {
+    buscarTodosAuction: async () => {
         try {
             const results = await getConnection().query(`
                 select * from pratica.LeiaoProduto
+            `)
+            return results.recordset
+        } catch(err) {
+            console.log("Error ao buscar todos os Produtos: "+err.code)
+            return false
+        }
+    },
+    buscarTodos: async () => {
+        try {
+            const results = await getConnection().query(`
+                select * from pratica.Produto
             `)
             return results.recordset
         } catch(err) {

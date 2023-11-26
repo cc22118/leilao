@@ -3,19 +3,36 @@ import "./style.css"
 import ProductConnection, { Product, ProductAuction } from "../../services/product"
 import { Link } from "react-router-dom"
 import validateToken from "../../services/token"
+import ClienteConnection, { Cliente } from "../../services/cliente"
 
 export default function Home() {
   const [products, setProducts] = useState<Array<ProductAuction>>([])
   const [filtered, setFiltered] = useState<Array<ProductAuction>>([])
   const [search, setSearch] = useState<string>("")
+  const [user, setUser] = useState<Cliente>()
+
 
   async function handleProducts() {
-    await ProductConnection.getAll()
+    await ProductConnection.getAllAuction()
       .then(async (response) => {
         setProducts(await response.json())
       })
       .catch((_err) => {
         alert("Erro ao buscar produtos, tente novamente mais tarde.")
+      })
+
+      await ClienteConnection.info(localStorage.getItem('token')!!)
+      .then(async (res) => {
+        await ClienteConnection.BuscarPorId(await res.json().then(r => r.id))
+          .then(async (r) => {
+            setUser(await r.json())
+          })
+          .catch(err => {
+            console.log(err)
+          })
+      })
+      .catch(err => {
+        console.log(err)
       })
   }
 
@@ -58,7 +75,7 @@ export default function Home() {
           </button>
         </div>
         <div className="user">
-          <img src="https://publicdomainvectors.org/tn_img/abstract-user-flat-4.webp" alt="avatar" />
+          <img src={user?.urlAvatar} alt={"avatar de "+user?.nome} />
           <ul className="flutuante">
             <li onClick={() =>     document.location.replace("/profile")}>Ver Dados</li>
             <li onClick={deslogar}>Sair</li>

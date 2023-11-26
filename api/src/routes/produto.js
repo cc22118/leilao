@@ -28,10 +28,32 @@ produtoRoutes.get("/list", async (req, res) => {
   return res.status(200).json(produtos.filter(produto => (id_vendedor && produto.criador === parseInt(id_vendedor))))
 })
 
+
+produtoRoutes.get("/list/auction", async (req, res) => {
+  const { id_vendedor } = req.query
+
+  const produtos = await ProdutoDBQ.buscarTodosAuction()
+
+  if(!produtos)
+    return res.status(400).json({ error: "erro ao buscar produtos" })
+  return res.status(200).json(produtos.filter(produto => (id_vendedor == undefined || produto.criador === parseInt(id_vendedor))))
+})
+
+produtoRoutes.get("/list/auction/open", async (req, res) => {
+  const { id_vendedor } = req.query
+
+  const leiloes = await LeilaoDBQ.buscarTodosAbertos()
+
+  if(!leiloes)
+    return res.status(400).json({ error: "erro ao buscar leilões" })
+
+  return res.status(200).json(leiloes.filter(leilao => !id_vendedor || leilao.id_vendedor === parseInt(id_vendedor)))
+})
+
 produtoRoutes.get("/list/auction/:id", async (req, res) => {
   const { id } = req.params
 
-  const leilao = await ProdutoDBQ.buscarTodos()
+  const leilao = await ProdutoDBQ.buscarTodosAuction()
 
   if(!leilao)
     return res.status(400).json({ error: "leilão não encontrado" })
@@ -74,12 +96,12 @@ produtoRoutes.post("/", async (req, res) => {
 
 produtoRoutes.post("/:id/auction", async (req, res) => {
   const { id } = req.params
-  const { dataInicio, dataFim } = req.body
+  let { dataInicio, dataFim } = req.body
 
   if(req.user.cargo !== "admin" && req.user.cargo !== "vendedor")
     return res.status(403).json({ error: "você não possui autorização" })
 
-  if(!id)
+  if(!id || !dataInicio || !dataFim)
     return res.status(400).json({ error: "parâmetros incorretos ou tipos inválidos" })
 
   const produto = await ProdutoDBQ.buscarId(id)
